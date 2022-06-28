@@ -3,7 +3,7 @@ from collections import OrderedDict
 
 import torch.nn as nn
 import torch
-
+from nets.Fusion import fusion
 #---------------------------------------------------------------------#
 #   残差结构
 #   利用一个1x1卷积下降通道数，然后利用一个3x3卷积提取特征并且上升通道数
@@ -79,10 +79,6 @@ class DarkNet(nn.Module):
         self.bn1    = nn.BatchNorm2d(self.inplanes)
         self.relu1  = nn.LeakyReLU(0.1)
 
-        self.ca = ChannelAttention(self.inplanes)
-        self.sa = SpatialAttention()
-
-
 
         # 416,416,32 -> 208,208,64
         self.layer1 = self._make_layer([32, 64], layers[0])
@@ -97,10 +93,13 @@ class DarkNet(nn.Module):
 
         self.layers_out_filters = [64, 128, 256, 512, 1024]
 
-        self.ca1 = ChannelAttention(512)
-        self.sa1 = SpatialAttention()
+        self.ca1 = ChannelAttention(64)
 
-
+        self.ca2 = ChannelAttention(128)
+        self.ca3 = ChannelAttention(256)
+        self.sa = SpatialAttention()
+        self.fusion=fusion()
+        self.conv1_1=nn.Conv2d(512,256,1)
         # 进行权值初始化
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -131,20 +130,26 @@ class DarkNet(nn.Module):
         x = self.bn1(x)
         x = self.relu1(x)
 
-        x = self.ca(x) * x
-        x = self.sa(x) * x
-
         x = self.layer1(x)
-        x = self.layer2(x)
-        out3 = self.layer3(x)
-        out4 = self.layer4(out3)
+        x11 = self.ca1(x) * x
+        x11 = self.sa(x11) * x11
 
-        out4=self.ca1(out4) * out4
-        out4= self.sa1(out4) * out4
+        x = self.layer2(x)
+
+        x22 = self.ca2(x) * x
+        x22 = self.sa(x22) * x22
+
+        out3 = self.layer3(x)
+        x33 = self.ca3(out3) * out3
+        x33 = self.sa(x33) * x33
+        sum=self.fusion(x11,x22,x33)
+        sum=torch.cat([sum,out3],dim=1)
+        sum=self.conv1_1(sum)
+        out4 = self.layer4(out3)
 
         out5 = self.layer5(out4)
 
-        return out3, out4, out5
+        return sum, out4, out5
 
 def darknet53():
     model = DarkNet([1, 2, 8, 8, 4])
@@ -154,4 +159,3 @@ if __name__ == '__main__':
     model=darknet53()
     x=torch.randn(1,3,320,320)
     x1,x2,x3=model(x)
-    print(x3.shape)

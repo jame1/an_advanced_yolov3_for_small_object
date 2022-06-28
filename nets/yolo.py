@@ -3,7 +3,7 @@ from collections import OrderedDict
 import torch
 import torch.nn as nn
 
-from nets.RSU4F import RSU4F
+from nets.DCM import DCM
 from nets.darknet import darknet53
 
 def conv2d(filter_in, filter_out, kernel_size):
@@ -40,6 +40,7 @@ class YoloBody(nn.Module):
         #   26,26,512
         #   13,13,1024
         #---------------------------------------------------#
+
         self.backbone = darknet53()
 
         #---------------------------------------------------#
@@ -66,8 +67,8 @@ class YoloBody(nn.Module):
         self.pool = nn.MaxPool2d(2, stride=2, ceil_mode=True)
         self.conv1_1=nn.Conv2d(1024,512,kernel_size=1)
         self.conv3_1=nn.Conv2d(512,256,kernel_size=1)
-        self.X2=RSU4F(in_ch=256,out_ch=256)
-        self.X1=RSU4F(in_ch=512,out_ch=512)
+        self.X2=DCM(in_ch=256,out_ch=256)
+        self.X1=DCM(in_ch=512,out_ch=512)
         self.conv0_1 = nn.Conv2d(1536, 1024, kernel_size=1)
     def forward(self, x):
         #---------------------------------------------------#   

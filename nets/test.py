@@ -1,4 +1,4 @@
-from nets.RSU4F import RSU4F
+from nets.DCM import RSU4F
 import torch
 
 x=torch.randn(1,3,64,64)

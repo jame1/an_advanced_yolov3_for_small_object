@@ -22,7 +22,7 @@ class YOLO(object):
         #   model_path指向logs文件夹下的权值文件，classes_path指向model_data下的txt
         #   如果出现shape不匹配，同时要注意训练时的model_path和classes_path参数的修改
         #--------------------------------------------------------------------------#
-        "model_path"        : 'logs/coco/ep123-loss5.610-val_loss5.073.pth',
+        "model_path"        : 'logs/ep080-loss13.575-val_loss13.612.pth',
         "classes_path"      : 'model_data/coco_classes.txt',
         #---------------------------------------------------------------------#
         #   anchors_path代表先验框对应的txt文件，一般不修改。

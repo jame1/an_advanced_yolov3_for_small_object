@@ -16,10 +16,10 @@ class REBNCONV(nn.Module):
         return xout
 
 
-class RSU4F(nn.Module):#UNet04FRES(nn.Module):
+class DCM(nn.Module):#UNet04FRES(nn.Module):
 
     def __init__(self, in_ch=3, mid_ch=12, out_ch=3):
-        super(RSU4F,self).__init__()
+        super(DCM,self).__init__()
 
         self.rebnconvin = REBNCONV(in_ch,out_ch,dirate=1)
 

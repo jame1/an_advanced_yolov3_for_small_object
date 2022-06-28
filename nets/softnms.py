@@ -1,7 +1,6 @@
 import numpy as np
 import cv2
 
-
 def py_cpu_softnms(dets, sc, Nt=0.9, sigma=1.1, thresh=0.001, method=1):
     """
     py_cpu_softnms
