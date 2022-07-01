@@ -62,7 +62,7 @@ if __name__ == "__main__":
     num_train   = len(train_lines)
     num_val     = len(val_lines)
 
-    batch_size  = 20
+    batch_size  = 10
     lr          = 1e-4
 
     end_epoch   = 200
