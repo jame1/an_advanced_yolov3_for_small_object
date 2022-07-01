@@ -2,16 +2,6 @@ import numpy as np
 import cv2
 
 def py_cpu_softnms(dets, sc, Nt=0.9, sigma=1.1, thresh=0.001, method=1):
-    """
-    py_cpu_softnms
-    :param dets:   boexs 坐标矩阵 format [y1, x1, y2, x2]
-    :param sc:     每个 boxes 对应的分数
-    :param Nt:     iou 交叠门限
-    :param sigma:  使用 gaussian 函数的方差
-    :param thresh: 最后的分数门限
-    :param method: 使用的方法
-    :return:       留下的 boxes 的 index
-    """
 
     dets=dets.numpy()
     sc=sc.numpy()

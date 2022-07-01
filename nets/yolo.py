@@ -39,8 +39,6 @@ class YoloBody(nn.Module):
         #   52,52,256
         #   26,26,512
         #   13,13,1024
-        #---------------------------------------------------#
-
         self.backbone = darknet53()
 
         #---------------------------------------------------#
@@ -64,12 +62,9 @@ class YoloBody(nn.Module):
 
         self.last_layer2            = make_last_layers([128, 256], out_filters[-3] + 128, len(anchors_mask[2]) * (num_classes + 5))
 
-        self.pool = nn.MaxPool2d(2, stride=2, ceil_mode=True)
-        self.conv1_1=nn.Conv2d(1024,512,kernel_size=1)
-        self.conv3_1=nn.Conv2d(512,256,kernel_size=1)
         self.X2=DCM(in_ch=256,out_ch=256)
         self.X1=DCM(in_ch=512,out_ch=512)
-        self.conv0_1 = nn.Conv2d(1536, 1024, kernel_size=1)
+
     def forward(self, x):
         #---------------------------------------------------#   
         #   获得三个有效特征层，他们的shape分别是：
@@ -77,16 +72,9 @@ class YoloBody(nn.Module):
         #---------------------------------------------------#
         x2, x1, x0 = self.backbone(x)
         device=torch.device('cuda')
-        x21=self.X2(x2).to(device)
-        x2_=self.pool(x1)
-        x11=self.X1(x1).to(device)
+        x2=self.X2(x2).to(device)
+        x1 = self.X1(x1).to(device)
 
-        x22=torch.cat([x11,x1],1)
-        x1=self.conv1_1(x22)
-        x33 = torch.cat([x21, x2], 1)
-        x2=self.conv3_1(x33)
-        x0=torch.cat([x0,x2_],1)
-        x0=self.conv0_1(x0)
         #---------------------------------------------------#
         #   第一个特征层
         #   out0 = (batch_size,255,13,13)
@@ -101,6 +89,7 @@ class YoloBody(nn.Module):
 
         # 26,26,256 + 26,26,512 -> 26,26,768
         x1_in = torch.cat([x1_in, x1], 1)
+
         #---------------------------------------------------#
         #   第二个特征层
         #   out1 = (batch_size,255,26,26)
