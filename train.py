@@ -66,8 +66,8 @@ if __name__ == "__main__":
     lr          = 1e-4
 
     end_epoch   = 200
-        
-    optimizer       = optim.SGD(model_train.parameters(), lr, weight_decay = 5e-4)
+    optimizer      =optim.Adam(model_train.parameters(), lr, weight_decay = 5e-4)
+    #optimizer       = optim.SGD(model_train.parameters(), lr, weight_decay = 5e-4)
     lr_scheduler    = optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.92)
 
     train_dataset   = YoloDataset(train_lines, input_shape, num_classes, train = True)

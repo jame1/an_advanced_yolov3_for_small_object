@@ -15,8 +15,7 @@ class REBNCONV(nn.Module):
 
         return xout
 
-
-class DCM(nn.Module):#UNet04FRES(nn.Module):
+class DCM(nn.Module):
 
     def __init__(self, in_ch=3, mid_ch=12, out_ch=3):
         super(DCM,self).__init__()
